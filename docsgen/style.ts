@@ -26,6 +26,14 @@ export function mobile(...styles: CSSProps[]): CSSProps {
     return media({ maxWidth: 700 }, ...styles);
 }
 
+export function darkMode(styles: CSSProps): CSSProps {
+    return {
+        $nest: {
+            "@media (prefers-color-scheme: dark)": styles,
+        },
+    };
+}
+
 cssRule("body", {
     fontFamily: `"Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif`,
     fontSize: 16,
@@ -59,5 +67,9 @@ cssRule(
         paddingTop: 25,
         marginLeft: -20,
     },
+    darkMode({
+        color: "#919dc0",
+        textShadow: "1px 1px 2px #1c1e26",
+    }),
     mobile({ marginLeft: 0 }),
 );

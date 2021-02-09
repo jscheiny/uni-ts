@@ -2,7 +2,7 @@ import * as React from "react";
 import { classes, style } from "typestyle";
 import { MarkdownChildren } from "./markdown";
 import { PageModel } from "./pageModel";
-import { component, mobile, styles } from "./style";
+import { component, darkMode, mobile, styles } from "./style";
 
 interface SidebarProps {
     pages: PageModel[];
@@ -36,7 +36,12 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = ({ pages, selected
     return (
         <Container>
             {links}
-            <PageLink className={selectedPage} href="https://github.com/jscheiny/safe-units">
+            <PageLink
+                className={selectedPage}
+                href="https://github.com/jscheiny/safe-units"
+                rel="noreferrer"
+                target="_blank"
+            >
                 <GithubIcon src="images/github-icon.png" /> View on GitHub
             </PageLink>
         </Container>
@@ -54,6 +59,9 @@ const Container = component(
         fontSize: 14,
         overflow: "auto",
     },
+    darkMode({
+        background: "#272a35",
+    }),
     mobile({ overflow: "visible" }),
 );
 
@@ -80,18 +88,30 @@ const PageLink = component(
             },
         },
     },
+    darkMode({
+        color: "#E1E8ED",
+        background: "#1C1E26",
+        $nest: {
+            "&:hover": {
+                background: "#323643",
+            },
+        },
+    }),
     mobile({ display: "block" }),
 );
 
-const homeLink = style({
-    color: HOME_COLOR,
-});
+const homeLink = style(
+    {
+        color: HOME_COLOR,
+    },
+    darkMode({ color: "#919dc0" }),
+);
 
 const pageLink = style({
     color: LINK_COLOR,
 });
 
-const selectedPage = style({
+const selectedPageStyles = styles({
     color: "#F5F8FA",
     background: HOME_COLOR,
     $nest: {
@@ -101,6 +121,8 @@ const selectedPage = style({
         },
     },
 });
+
+const selectedPage = style(selectedPageStyles, darkMode(selectedPageStyles));
 
 const SectionLink = component(
     "section-link",
@@ -114,6 +136,14 @@ const SectionLink = component(
             },
         },
     },
+    darkMode({
+        color: "#E1E8ED",
+        $nest: {
+            "&:hover": {
+                background: HOME_COLOR,
+            },
+        },
+    }),
     mobile({ display: "none" }),
 );
 

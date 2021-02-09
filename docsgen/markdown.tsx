@@ -2,7 +2,7 @@ import { Node } from "commonmark";
 import { highlight } from "highlight.js";
 import * as React from "react";
 import { createNodeId, getNodeText } from "./markdownUtils";
-import { component } from "./style";
+import { component, darkMode } from "./style";
 
 interface MarkdownProps {
     root: Node;
@@ -146,18 +146,32 @@ const CodeBlock = component("code-block", "code", {
     },
 });
 
-const CodeInline = component("code-inline", "code", {
-    color: "#6272a4",
-    fontSize: 18,
-});
+const CodeInline = component(
+    "code-inline",
+    "code",
+    {
+        color: "#6272a4",
+        fontSize: 18,
+    },
+    darkMode({
+        color: "#919dc0",
+    }),
+);
 
-export const Link = component("link", "a", {
-    color: "#008075",
-    textDecoration: "none",
-    $nest: {
-        "&:hover": {
-            color: "#00B3A4",
-            textDecoration: "underline",
+export const Link = component(
+    "link",
+    "a",
+    {
+        color: "#008075",
+        textDecoration: "none",
+        $nest: {
+            "&:hover": {
+                color: "#00B3A4",
+                textDecoration: "underline",
+            },
         },
     },
-});
+    darkMode({
+        color: "#2EE6D6",
+    }),
+);

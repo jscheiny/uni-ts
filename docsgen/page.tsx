@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link, Markdown } from "./markdown";
 import { PageModel } from "./pageModel";
 import { Sidebar } from "./sidebar";
-import { component, mobile } from "./style";
+import { component, darkMode, mobile } from "./style";
 
 interface PageProps {
     pages: PageModel[];
@@ -59,6 +59,10 @@ const Contents = component(
         background: "#EBF1F5",
         boxShadow: "inset 15px 0 30px -30px #182026",
     },
+    darkMode({
+        background: "#323543",
+        color: "#F5F8FA",
+    }),
     mobile({ overflow: "visible", boxShadow: "inset 0 15px 30px -30px #182026" }),
 );
 
@@ -80,9 +84,16 @@ const EndMatter = component("end-matter", "div", {
     fontSize: 14,
 });
 
-const License = component("license", "div", {
-    marginTop: 20,
-    color: "#738694",
-    textShadow: "0 1px 0 white",
-    fontSize: 12,
-});
+const License = component(
+    "license",
+    "div",
+    {
+        marginTop: 20,
+        color: "#738694",
+        textShadow: "0 1px 0 white",
+        fontSize: 12,
+    },
+    darkMode({
+        textShadow: "0 1px 0 black",
+    }),
+);

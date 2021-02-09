@@ -46,7 +46,7 @@ const pages = readdirSync("docs")
 const orderPath = join("docs", "order.txt");
 let order: string[] = [];
 if (existsSync(orderPath) && !statSync(orderPath).isDirectory()) {
-    order = readFileSync(orderPath, "UTF8").split("\n");
+    order = readFileSync(orderPath, { encoding: "utf8" }).split("\n");
 }
 
 function orderBy(order: string[]): (a: PageModel, b: PageModel) => number {
