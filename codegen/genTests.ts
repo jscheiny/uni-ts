@@ -1,6 +1,5 @@
 import {
     ExponentSpec,
-    genExponentName,
     genFileHeader,
     genImport,
     genUncurriedTypeName,
@@ -12,7 +11,8 @@ import {
 export function genOperatorTests(spec: OperatorSpec): string {
     return [
         ...genFileHeader(),
-        ...genImport(genUncurriedTypeName(spec), "../../../src/exponent"),
+        ...genImport(genUncurriedTypeName(spec), "../../src/exponent"),
+        ...genImport("assertRelation", "../utils"),
         ...genTests(spec),
     ].join("\n");
 }
@@ -31,8 +31,7 @@ function genTests(spec: OperatorSpec): string[] {
 
 function genTest(spec: OperatorSpec, left: ExponentSpec, right: ExponentSpec): string {
     const result = spec.compute(left.value, right.value);
-    const typeName = `${spec.testTypeNamePrefix}Of${genExponentName(left)}And${genExponentName(right)}`;
     const testType = `${genUncurriedTypeName(spec, left.type, right.type)}`;
     const expectedType = isExponent(result, spec) ? `"${result}"` : "never";
-    return `type ${typeName} = ${testType}; // $ExpectType ${expectedType}`;
+    return `assertRelation<${testType}, ${expectedType}>().isSame();`;
 }

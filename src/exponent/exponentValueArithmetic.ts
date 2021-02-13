@@ -6,6 +6,7 @@ export function getExponentValue(value: Exponent): number {
 
 export const negateExponent = (value: Exponent) => toExponent(-getExponentValue(value));
 export const addExponents = wrapBinaryExponentFn((left, right) => left + right);
+export const subtractExponents = wrapBinaryExponentFn((left, right) => left - right);
 export const multiplyExponents = wrapBinaryExponentFn((left, right) => left * right);
 export const divideExponents = wrapBinaryExponentFn((left, right) => left / right);
 

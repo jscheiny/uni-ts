@@ -27,22 +27,22 @@ export interface GenericMeasureStatic<N> {
     subtract: BinaryFn<N>;
 
     /** Static version of `left.times(right)` */
-    multiply<L extends Unit, R extends MultiplicandUnit<L>>(
-        left: GenericMeasure<N, L>,
-        right: GenericMeasure<N, R>,
-    ): GenericMeasure<N, MultiplyUnits<L, R>>;
+    multiply<B extends {}, L extends Unit<B>, R extends MultiplicandUnit<B, L>>(
+        left: GenericMeasure<N, B, L>,
+        right: GenericMeasure<N, B, R>,
+    ): GenericMeasure<N, B, MultiplyUnits<B, L, R>>;
 
     /** Static version of `left.div(right)` */
-    divide<L extends Unit, R extends DivisorUnit<L>>(
-        left: GenericMeasure<N, L>,
-        right: GenericMeasure<N, R>,
-    ): GenericMeasure<N, DivideUnits<L, R>>;
+    divide<B extends {}, L extends Unit<B>, R extends DivisorUnit<B, L>>(
+        left: GenericMeasure<N, B, L>,
+        right: GenericMeasure<N, B, R>,
+    ): GenericMeasure<N, B, DivideUnits<B, L, R>>;
 
     /** Static version of `value.toThe(exp)` */
-    pow<U extends Unit, E extends AllowedExponents<U>>(
-        value: GenericMeasure<N, U>,
+    pow<B extends {}, U extends Unit<B>, E extends AllowedExponents<B, U>>(
+        value: GenericMeasure<N, B, U>,
         exp: E,
-    ): GenericMeasure<N, ExponentiateUnit<U, E>>;
+    ): GenericMeasure<N, B, ExponentiateUnit<B, U, E>>;
 
     /**
      * Creates a function that takes a measure and applies a symbol to its prefix and scales it by a given multiplier.

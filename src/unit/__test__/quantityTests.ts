@@ -4,7 +4,7 @@ import * as Quantity from "../quantities";
 describe("Quantities", () => {
     const QuantityNames = Object.keys(Quantity);
 
-    function forEachQuantity(fn: (quantity: Measure<any>, name: string) => void): void {
+    function forEachQuantity(fn: (quantity: Measure<any, any>, name: string) => void): void {
         QuantityNames.forEach(name => {
             fn((Quantity as any)[name], name);
         });

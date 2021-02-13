@@ -10,7 +10,6 @@ export const codeGenSpec: CodeGenSpec = {
             fileNamePrefix: "addition",
             uncurriedTypeNamePrefix: "Add",
             curriedTypeNamePrefix: "Add",
-            testTypeNamePrefix: "Sum",
             specialCases: {
                 0: "R",
             },
@@ -20,7 +19,6 @@ export const codeGenSpec: CodeGenSpec = {
             fileNamePrefix: "multiplication",
             uncurriedTypeNamePrefix: "Multiply",
             curriedTypeNamePrefix: "MultiplyBy",
-            testTypeNamePrefix: "Product",
             specialCases: {
                 0: "0",
                 1: "R",
@@ -31,7 +29,6 @@ export const codeGenSpec: CodeGenSpec = {
             fileNamePrefix: "division",
             uncurriedTypeNamePrefix: "Divide",
             curriedTypeNamePrefix: "DividedBy",
-            testTypeNamePrefix: "Quotient",
             specialCases: {
                 0: "(R extends 0 ? never : 0)",
             },

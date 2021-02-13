@@ -1,44 +1,48 @@
 import { GenericMeasure } from "../measure/genericMeasure";
-import { GenericMeasureType } from "../measure/genericMeasureFactory";
 import { Measure } from "../measure/numberMeasure";
+import { UnitBasis, UnitSystem } from "../measure/unitSystem";
+import { DimensionUnit } from "../measure/unitTypeArithmetic";
 
-interface BaseUnitsMap {
-    meters: "length";
-    kilograms: "mass";
-    seconds: "time";
-    amperes: "current";
-    kelvin: "temperature";
-    moles: "substance";
-    candelas: "intensity";
-    radians: "planeAngle";
-    steradians: "solidAngle";
-    bits: "memory";
-}
+export interface MetricSystem
+    extends UnitBasis<
+            | "length"
+            | "mass"
+            | "time"
+            | "current"
+            | "temperature"
+            | "substance"
+            | "intensity"
+            | "planeAngle"
+            | "solidAngle"
+            | "memory"
+        > {}
 
-export type BaseUnits<N> = { [U in keyof BaseUnitsMap]: GenericMeasure<N, { [K in BaseUnitsMap[U]]: "1" }> };
-
-export const createBaseUnits = <N>(MeasureType: GenericMeasureType<N, any>): BaseUnits<N> => ({
-    meters: MeasureType.dimension("length", "m"),
-    kilograms: MeasureType.dimension("mass", "kg"),
-    seconds: MeasureType.dimension("time", "s"),
-    amperes: MeasureType.dimension("current", "A"),
-    kelvin: MeasureType.dimension("temperature", "K"),
-    moles: MeasureType.dimension("substance", "mol"),
-    candelas: MeasureType.dimension("intensity", "cd"),
-    radians: MeasureType.dimension("planeAngle", "rad"),
-    steradians: MeasureType.dimension("solidAngle", "sr"),
-    bits: MeasureType.dimension("memory", "b"),
+export const MetricSystem = new UnitSystem<MetricSystem>({
+    length: "m",
+    mass: "kg",
+    time: "s",
+    current: "A",
+    temperature: "K",
+    substance: "mol",
+    intensity: "cd",
+    planeAngle: "rad",
+    solidAngle: "sr",
+    memory: "b",
 });
 
-export const {
-    meters,
-    kilograms,
-    seconds,
-    amperes,
-    kelvin,
-    moles,
-    candelas,
-    radians,
-    steradians,
-    bits,
-} = createBaseUnits(Measure);
+type MetricDimension<D extends keyof MetricSystem> = GenericMeasure<
+    number,
+    MetricSystem,
+    DimensionUnit<MetricSystem, D>
+>;
+
+export const meters: MetricDimension<"length"> = Measure.dimension(MetricSystem, "length");
+export const kilograms: MetricDimension<"mass"> = Measure.dimension(MetricSystem, "mass");
+export const seconds: MetricDimension<"time"> = Measure.dimension(MetricSystem, "time");
+export const amperes: MetricDimension<"current"> = Measure.dimension(MetricSystem, "current");
+export const kelvin: MetricDimension<"temperature"> = Measure.dimension(MetricSystem, "temperature");
+export const moles: MetricDimension<"substance"> = Measure.dimension(MetricSystem, "substance");
+export const candelas: MetricDimension<"intensity"> = Measure.dimension(MetricSystem, "intensity");
+export const radians: MetricDimension<"planeAngle"> = Measure.dimension(MetricSystem, "planeAngle");
+export const steradians: MetricDimension<"solidAngle"> = Measure.dimension(MetricSystem, "solidAngle");
+export const bits: MetricDimension<"memory"> = Measure.dimension(MetricSystem, "memory");

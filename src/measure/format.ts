@@ -1,18 +1,22 @@
+import { Exponent } from "../exponent";
 import { getExponentValue, negateExponent } from "../exponent/exponentValueArithmetic";
-import { SymbolAndExponent, UnitWithSymbols } from "./unitTypeArithmetic";
+import { UnitSystem } from "./unitSystem";
+import { Unit } from "./unitTypeArithmetic";
 
-export function defaultFormatUnit(unit: UnitWithSymbols): string {
-    const dimensions = Object.keys(unit)
-        .map(dimension => unit[dimension])
-        .filter(isDimensionPresent)
-        .sort(orderDimensions);
+interface UnitDimension {
+    symbol: string;
+    exponent: Exponent;
+}
+
+export function defaultFormatUnit<B extends {}>(unit: Unit<B>, unitSystem: UnitSystem<B>): string {
+    const dimensions = getDimensions(unit, unitSystem).sort(orderDimensions);
 
     if (dimensions.length === 0) {
         return "";
     }
 
-    const positive = dimensions.filter(([_, dim]) => getExponentValue(dim) > 0);
-    const negative = dimensions.filter(([_, dim]) => getExponentValue(dim) < 0);
+    const positive = dimensions.filter(({ exponent }) => getExponentValue(exponent) > 0);
+    const negative = dimensions.filter(({ exponent }) => getExponentValue(exponent) < 0);
 
     if (positive.length === 0) {
         return formatDimensions(negative);
@@ -27,27 +31,33 @@ export function defaultFormatUnit(unit: UnitWithSymbols): string {
     return `${numerator} / ${maybeParenthesize(denominator, negative.length !== 1)}`;
 }
 
-function isDimensionPresent(dimension: SymbolAndExponent | undefined): dimension is SymbolAndExponent {
-    return dimension !== undefined && dimension[1] !== "0";
+function orderDimensions(left: UnitDimension, right: UnitDimension): number {
+    return left.symbol < right.symbol ? -1 : 1;
 }
 
-function orderDimensions([leftSymbol]: SymbolAndExponent, [rightSymbol]: SymbolAndExponent): number {
-    return leftSymbol < rightSymbol ? -1 : 1;
-}
-
-function formatDimensions(dimensions: SymbolAndExponent[]): string {
+function formatDimensions(dimensions: UnitDimension[]): string {
     return dimensions
-        .map(([symbol, exponent]) => {
+        .map(({ symbol, exponent }) => {
             const exponentStr = exponent !== "1" ? `^${exponent}` : "";
             return `${symbol}${exponentStr}`;
         })
         .join(" * ");
 }
 
-function negateDimension([symbol, exponent]: SymbolAndExponent): SymbolAndExponent {
-    return [symbol, negateExponent(exponent)];
+function negateDimension({ symbol, exponent }: UnitDimension): UnitDimension {
+    return { symbol, exponent: negateExponent(exponent) };
 }
 
 function maybeParenthesize(text: string, parenthesize: boolean): string {
     return parenthesize ? `(${text})` : text;
+}
+
+function getDimensions<B extends {}>(unit: Unit<B>, unitSystem: UnitSystem<B>): UnitDimension[] {
+    return unitSystem
+        .getDimensions()
+        .map((dimension): UnitDimension => ({
+            symbol: unitSystem.getSymbol(dimension),
+            exponent: unit[dimension],
+        }))
+        .filter(({ exponent }) => exponent !== "0");
 }

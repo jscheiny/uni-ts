@@ -2,10 +2,18 @@ import { NumericOperations } from "../genericMeasure";
 import { createMeasureType } from "../genericMeasureFactory";
 import { wrapBinaryFn, wrapReducerFn, wrapSpreadFn, wrapUnaryFn } from "../genericMeasureUtils";
 import { Measure } from "../numberMeasure";
+import { UnitBasis, UnitSystem } from "../unitSystem";
 
 describe("Generic measures", () => {
+    interface TestUnitSystem extends UnitBasis<"length" | "mass"> {}
+
+    const TestUnitSystem = new UnitSystem<TestUnitSystem>({
+        length: "m",
+        mass: "kg",
+    });
+
     describe("function wrappers", () => {
-        const meters = Measure.dimension("L", "m");
+        const meters = Measure.dimension(TestUnitSystem, "mass");
         const add = (left: number, right: number) => left + right;
 
         it("unary wrapper", () => {

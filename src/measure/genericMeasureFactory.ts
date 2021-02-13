@@ -1,33 +1,32 @@
 import { GenericMeasure, NumericOperations } from "./genericMeasure";
 import { createMeasureClass } from "./genericMeasureClass";
 import { GenericMeasureStatic, getGenericMeasureStaticMethods } from "./genericMeasureStatic";
-import { IsSingleStringLiteral } from "./typeUtils";
-import { Unit } from "./unitTypeArithmetic";
-import { dimension } from "./unitValueArithmetic";
-
-type DimensionResult<N, D extends string> = true extends IsSingleStringLiteral<D>
-    ? GenericMeasure<N, { [Dim in D]: "1" }>
-    : never;
+import { UnitSystem } from "./unitSystem";
+import { DimensionlessUnit, DimensionUnit, Unit } from "./unitTypeArithmetic";
 
 /** The functions needed to construct a measure of a given numeric type */
 interface GenericMeasureFactory<N> {
     /** The constructor for this generic measure type, useful for doing `instanceof` checks. */
-    isMeasure(value: any): value is GenericMeasure<N, any>;
+    isMeasure(value: any): value is GenericMeasure<N, any, any>;
 
     /**
      * Creates a new dimension base unit.
-     * @param dim a unique string literal which names this dimension (e.g. "length")
-     * @param symbol the symbol of the base unit of the dimension (e.g. "m")
+     * @param unitSystem the unit system of the measure
+     * @param dim one of the bases of the unit system
      * @returns A measure representing 1 base unit of the dimension (1 m)
      */
-    dimension<D extends string>(dim: D, symbol?: string): DimensionResult<N, D>;
+    dimension<B extends {}, D extends keyof B>(
+        unitSystem: UnitSystem<B>,
+        dim: D,
+    ): GenericMeasure<N, B, DimensionUnit<B, D>>;
 
     /**
      * Creates a dimensionless measure.
+     * @param unitSystem the unit system of the measure
      * @param value the value of the measure
      * @returns a measure with no dimensions
      */
-    dimensionless(value: N): GenericMeasure<N, {}>;
+    dimensionless<B extends {}>(unitSystem: UnitSystem<B>, value: N): GenericMeasure<N, B, DimensionlessUnit<B>>;
 
     /**
      * Creates a measure as a multiple of another measure.
@@ -36,7 +35,11 @@ interface GenericMeasureFactory<N> {
      * @param symbol an optional unit symbol for this measure
      * @returns a measure of value number of quantities.
      */
-    of<U extends Unit>(value: N, quantity: GenericMeasure<N, U>, symbol?: string): GenericMeasure<N, U>;
+    of<B extends {}, U extends Unit<B>>(
+        value: N,
+        quantity: GenericMeasure<N, B, U>,
+        symbol?: string,
+    ): GenericMeasure<N, B, U>;
 }
 
 type GenericMeasureCommon<N> = GenericMeasureFactory<N> & GenericMeasureStatic<N>;
@@ -70,12 +73,21 @@ export function createMeasureType<N, S extends {} = {}>(
 
     const common: GenericMeasureCommon<N> = {
         ...getGenericMeasureStaticMethods(),
-        isMeasure: (value): value is GenericMeasure<N, any> => value instanceof Measure,
-        dimensionless: value => new Measure(value, {}),
-        dimension: <D extends string>(dim: D, symbol?: string) =>
-            new Measure(num.one(), dimension(dim, symbol), symbol) as DimensionResult<N, D>,
-        of: <U extends Unit>(value: N, quantity: GenericMeasure<N, U>, symbol?: string) =>
-            new Measure(num.mult(value, quantity.value), quantity.unit, symbol),
+        isMeasure: (value): value is GenericMeasure<N, any, any> => {
+            return value instanceof Measure;
+        },
+        dimensionless: (unitSystem, value) => {
+            return new Measure(value, unitSystem.createDimensionlessUnit(), unitSystem);
+        },
+        dimension: (unitSystem, dim) => {
+            const unit = unitSystem.createDimensionUnit(dim);
+            const symbol = unitSystem.getSymbol(dim);
+            return new Measure(num.one(), unit, unitSystem, symbol);
+        },
+        of: (value, quantity, symbol) => {
+            const { unit, unitSystem } = quantity;
+            return new Measure(num.mult(value, quantity.value), unit, unitSystem, symbol);
+        },
     };
 
     return {

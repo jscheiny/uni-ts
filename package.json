@@ -31,11 +31,13 @@
         "lint:docs": "tslint -p docsgen/tsconfig.json -c tslint.json",
         "lint:src": "tslint -p src/tsconfig.json -c tslint.json",
         "lint:dist": "./scripts/check-typings.sh",
-        "lint:types": "dtslint test/types",
-        "lint": "npm-run-all -p lint:codegen lint:docs lint:src lint:dist lint:types",
+        "lint:test": "tslint -p test/tsconfig.json -c tslint.json",
+        "lint": "npm-run-all -p lint:codegen lint:docs lint:src lint:dist lint:test",
         "node:codegen": "node codegen/dist/emit",
         "node:docs": "node docsgen/dist/index",
-        "test": "jest --config jest.config.json",
+        "test:code": "jest --config jest.config.json",
+        "test:types": "tsc -p test",
+        "test": "npm-run-all -p test:code test:types",
         "prepack": "yarn clean && yarn build",
         "verify": "npm-run-all -s build lint test docs"
     },
@@ -43,10 +45,9 @@
         "@types/commonmark": "^0.27.1",
         "@types/highlight.js": "^9.12.3",
         "@types/jest": "^22.2.3",
-        "@types/node": "^8.10.16",
+        "@types/node": "^14.0.27",
         "@types/react-dom": "^16.0.11",
         "commonmark": "^0.28.1",
-        "dtslint": "^0.3.0",
         "highlight.js": "^9.14.2",
         "jest": "^22.4.3",
         "normalize.css": "^8.0.1",
@@ -62,7 +63,7 @@
         "tslint-config-standard": "^7.0.0",
         "tslint-no-circular-imports": "^0.4.0",
         "tslint-plugin-prettier": "^1.3.0",
-        "typescript": "~3.5.2",
+        "typescript": "~3.9.7",
         "typestyle": "^2.0.1"
     }
 }

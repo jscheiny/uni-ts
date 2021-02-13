@@ -1,12 +1,13 @@
 import { GenericMeasure, LiftMeasure } from "../measure/genericMeasure";
 import { Measure } from "../measure/numberMeasure";
+import { DimensionlessUnit } from "../measure/unitTypeArithmetic";
 import * as Base from "./base";
 
 // Dimensionless
 
-/** A measure without any unit */
-export type Dimensionless<N = number> = LiftMeasure<typeof Dimensionless, N>;
-export const Dimensionless: GenericMeasure<number, {}> = Measure.dimensionless(1);
+/** A measure in the Metric system without any unit */
+export type Dimensionless<N = number> = GenericMeasure<N, Base.MetricSystem, DimensionlessUnit<Base.MetricSystem>>;
+export const Dimensionless: Dimensionless = Measure.dimensionless(Base.MetricSystem, 1);
 
 // Base units
 

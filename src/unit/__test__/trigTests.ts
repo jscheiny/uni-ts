@@ -1,14 +1,14 @@
 import { Measure } from "../../measure/numberMeasure";
 import { degrees, piRadians } from "../angle";
-import { meters, radians } from "../base";
+import { meters, MetricSystem, radians } from "../base";
 import * as Trig from "../trig";
 
 describe("Trig", () => {
     const zeroRadians = Measure.of(0, radians);
-    const zero = Measure.dimensionless(0);
+    const zero = Measure.dimensionless(MetricSystem, 0);
 
     it("normal", () => {
-        expect(Trig.cos(zeroRadians)).toEqual(Measure.dimensionless(1));
+        expect(Trig.cos(zeroRadians)).toEqual(Measure.dimensionless(MetricSystem, 1));
         expect(Trig.sin(zeroRadians)).toEqual(zero);
         expect(Trig.tan(zeroRadians)).toEqual(zero);
     });

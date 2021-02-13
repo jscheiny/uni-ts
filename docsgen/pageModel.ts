@@ -14,7 +14,7 @@ export interface PageSection {
 export class PageModel {
     public static from(path: string): PageModel {
         const name = basename(path, ".md");
-        const source = readFileSync(path, "UTF8");
+        const source = readFileSync(path, { encoding: "utf-8" });
         const root = parser.parse(source);
         return new PageModel(name, root, getTitle(root), getSections(root));
     }

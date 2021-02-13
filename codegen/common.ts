@@ -11,7 +11,6 @@ export interface PartialOperatorSpec {
     fileNamePrefix: string;
     uncurriedTypeNamePrefix: string;
     curriedTypeNamePrefix: string;
-    testTypeNamePrefix: string;
     specialCases: { [left: number]: string };
     compute: (left: number, right: number) => number;
 }

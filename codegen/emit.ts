@@ -7,7 +7,7 @@ import { codeGenSpec } from "./spec";
 
 const DIR = "generated";
 const SRC_PREFIX = `src/exponent/${DIR}`;
-const TEST_PREFIX = `test/types/${DIR}`;
+const TEST_PREFIX = `test/${DIR}`;
 
 export interface EmitPlan {
     path: string;

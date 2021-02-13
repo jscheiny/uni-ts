@@ -5,7 +5,7 @@ describe("Predefined units", () => {
     const UnitNames = Object.keys(Units);
     const lowercaseFirstRegex = /^[a-z]/;
 
-    function forEachUnit(fn: (unit: Measure<any>, name: string) => void): void {
+    function forEachUnit(fn: (unit: Measure<any, any>, name: string) => void): void {
         const wrappedCallback = (value: any, name: string) => {
             // Quantities start with a capital letter, exclude them
             if (Measure.isMeasure(value) && lowercaseFirstRegex.test(name)) {

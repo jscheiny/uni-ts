@@ -1,16 +1,30 @@
 import { MeasureFormatter } from "../genericMeasure";
 import { Measure } from "../numberMeasure";
+import { UnitBasis, UnitSystem } from "../unitSystem";
 
 describe("Number measures", () => {
-    const meters = Measure.dimension("length", "m");
-    const seconds = Measure.dimension("time", "s");
-    const kilograms = Measure.dimension("mass", "kg");
+    interface TestUnitSystem extends UnitBasis<"length" | "time" | "mass"> {}
+
+    const TestUnitSystem = new UnitSystem<TestUnitSystem>({
+        length: "m",
+        time: "s",
+        mass: "kg",
+    });
+
+    const meters = Measure.dimension(TestUnitSystem, "length");
+    const seconds = Measure.dimension(TestUnitSystem, "time");
+    const kilograms = Measure.dimension(TestUnitSystem, "mass");
     const mps = meters.per(seconds);
     const mps2 = mps.per(seconds);
 
     describe("dimension", () => {
         it("should create dimensions with value 1", () => {
-            expect(Measure.dimension("foo", "f")).toEqual({ value: 1, unit: { foo: ["f", "1"] }, symbol: "f" });
+            expect(meters).toEqual({
+                value: 1,
+                unit: { length: "1", time: "0", mass: "0" },
+                unitSystem: TestUnitSystem,
+                symbol: "m",
+            });
         });
     });
 
@@ -29,9 +43,9 @@ describe("Number measures", () => {
         });
 
         it("should construct dimensionless values", () => {
-            const dimensionless = Measure.dimensionless(3);
+            const dimensionless = Measure.dimensionless(TestUnitSystem, 3);
             expect(dimensionless.value).toBe(3);
-            expect(dimensionless.unit).toEqual({});
+            expect(dimensionless.unit).toEqual({ length: "0", time: "0", mass: "0" });
         });
     });
 
@@ -161,7 +175,7 @@ describe("Number measures", () => {
 
             expect(value.inverse()).toEqual(Measure.of(0.1, meters.inverse()));
             expect(value.reciprocal()).toEqual(Measure.of(0.1, meters.inverse()));
-            expect(value.toThe("0")).toEqual(Measure.dimensionless(1));
+            expect(value.toThe("0")).toEqual(Measure.dimensionless(TestUnitSystem, 1));
             expect(value.toThe("1")).toEqual(Measure.of(10, meters));
             expect(value.squared()).toEqual(Measure.of(100, meters.squared()));
             expect(value.cubed()).toEqual(Measure.of(1000, meters.cubed()));
@@ -237,12 +251,12 @@ describe("Number measures", () => {
     });
 
     describe("formatting", () => {
-        function expectFormat(unit: Measure<any>, formatted: string, formatter?: MeasureFormatter<number>): void {
+        function expectFormat(unit: Measure<any, any>, formatted: string, formatter?: MeasureFormatter<number>): void {
             expect(unit.toString(formatter)).toBe(formatted);
         }
 
         it("should format dimensionless units", () => {
-            expectFormat(Measure.dimensionless(10), "10");
+            expectFormat(Measure.dimensionless(TestUnitSystem, 10), "10");
         });
 
         it("should format base units", () => {
@@ -297,7 +311,7 @@ describe("Number measures", () => {
                     .toString(),
             ).toBe("5 m^2");
             expect(
-                Measure.dimensionless(0)
+                Measure.dimensionless(TestUnitSystem, 0)
                     .withSymbol("rad")
                     .toString(),
             ).toBe("0");
@@ -311,14 +325,6 @@ describe("Number measures", () => {
         it("should use normal formatting if the other measure has no symbol", () => {
             const kilometers = Measure.of(1000, meters);
             expect(Measure.of(1000, meters).in(kilometers)).toBe("1000 m");
-        });
-
-        it("should use base unit symbols to format when available", () => {
-            const m = Measure.dimension("test-length", "meter");
-            const s = Measure.dimension("test-time", "second");
-            expect(m.toString()).toBe("1 meter");
-            expect(Measure.of(1, m.per(s)).toString()).toBe("1 meter / second");
-            expect(Measure.of(1, m.squared().per(s.squared())).toString()).toBe("1 meter^2 / second^2");
         });
 
         it("should use a custom formatter for values if provided", () => {
