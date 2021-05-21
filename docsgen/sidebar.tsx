@@ -10,14 +10,16 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FunctionComponent<SidebarProps> = ({ pages, selectedIndex }) => {
-    const pageSections = pages[selectedIndex].sections.filter(({ level }) => level <= 3).map(({ id, node, level }) => {
-        const className = classes(level === 2 && section, level === 3 && subsection);
-        return (
-            <SectionLink key={id} href={`#${id}`} className={className}>
-                <MarkdownChildren root={node} />
-            </SectionLink>
-        );
-    });
+    const pageSections = pages[selectedIndex].sections
+        .filter(({ level }) => level <= 3)
+        .map(({ id, node, level }) => {
+            const className = classes(level === 2 && section, level === 3 && subsection);
+            return (
+                <SectionLink key={id} href={`#${id}`} className={className}>
+                    <MarkdownChildren root={node} />
+                </SectionLink>
+            );
+        });
 
     const links = pages.map((page, index) => {
         const isSelected = index === selectedIndex;

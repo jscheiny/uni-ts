@@ -147,6 +147,10 @@ export function createMeasureClass<N>(num: NumericOperations<N>): GenericMeasure
             return `${value} ${unit.symbol}`;
         }
 
+        public valueIn(unit: GenericMeasure<N, U>): N {
+            return this.over(unit).value;
+        }
+
         public withSymbol(symbol: string | undefined): GenericMeasure<N, U> {
             return new Measure(this.value, this.unit, symbol);
         }

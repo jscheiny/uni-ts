@@ -1,3 +1,4 @@
+import { feet, kilo } from "../..";
 import { MeasureFormatter } from "../genericMeasure";
 import { Measure } from "../numberMeasure";
 
@@ -357,6 +358,16 @@ describe("Number measures", () => {
                     formatUnit: () => "meters",
                 }),
             ).toBe("20000 meters");
+        });
+    });
+
+    describe("conversion", () => {
+        it("should calculate meters to kilometers correctly", () => {
+            expect(Measure.of(10000, meters).valueIn(kilo(meters))).toBe(10);
+        });
+
+        it("should calculate feet to meters correctly", () => {
+            expect(Measure.of(10, feet).valueIn(meters)).toBeCloseTo(3.048);
         });
     });
 

@@ -36,7 +36,9 @@ export type DivideUnits<L extends Unit, R extends DivisorUnit<L>> = CleanUnit<
 >;
 
 /** A type that is assignable from all units that U can be divided by without producing an error. */
-export type DivisorUnit<U extends Unit> = Partial<{ [D in keyof U]: SubtrahendOf<CleanExponent<U[D]>> }> & Unit;
+export type DivisorUnit<U extends Unit> = 
+    | U // unit can always be divided by itself, but typescript doesn't quite figure that out
+    | Partial<{ [D in keyof U]: SubtrahendOf<CleanExponent<U[D]>> }> & Unit;
 
 // Exponentiation
 

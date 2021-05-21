@@ -1,4 +1,13 @@
-import { Acceleration, Area, kilograms, Measure, meters, newtons, seconds, Volume } from "safe-units";
+import {
+  Acceleration,
+  Area,
+  kilograms,
+  Measure,
+  meters,
+  newtons,
+  seconds,
+  Volume,
+} from "safe-units";
 
 // Valid usages
 

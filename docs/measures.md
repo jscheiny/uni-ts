@@ -412,6 +412,18 @@ elapsed.in(minutes); // 1 min
 rate.in(poundsPerSecond); // 1 £/s
 ```
 
+## Conversions
+
+In case we need to get numeric value of our measure in some particular unit, e.g. for passing to an external API, the `valueIn` method can be used, which returns a number:
+
+```ts
+const poundsPerSecond: CashFlowRate = pounds.per(seconds).withSymbol("£/s");
+
+profit.valueIn(pounds); // 60
+elapsed.valueIn(minutes); // 1
+rate.valueIn(poundsPerSecond); // 1
+```
+
 ## Function Wrappers
 
 It is often desirable to convert operations on numbers into operations on measures. Frequently, these functions make no change on the unit of a value. For example, suppose we want to make an absolute value function that operates on measures. We'd expect the function perserve the unit of the input. We can simply wrap an existing absolute value function using `wrapUnaryFn`:

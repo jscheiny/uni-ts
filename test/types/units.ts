@@ -10,6 +10,7 @@ import {
 } from "../../src/measure/unitTypeArithmetic";
 import { IsSame } from "./utils";
 import { IsSingleStringLiteral } from "../../src/measure/typeUtils";
+import { Measure, meters, milli, seconds } from "safe-units";
 
 type Extends<A, B> = A extends B ? true : false;
 
@@ -63,3 +64,8 @@ type RadicandRejectsZero = RadicandUnit<"0">; // $ExpectError
 type SingleLiteralWorks = IsSingleStringLiteral<"A">; // $ExpectType true
 type UnionLiteralWorks = IsSingleStringLiteral<"A" | "B">; // $ExpectType false
 type StringTypeWorks = IsSingleStringLiteral<string>; // $ExpectType false
+
+// Conversion
+
+Measure.of(3, meters).valueIn(seconds); // $ExpectError
+Measure.of(3, meters).valueIn(milli(meters)); // $ExpectType number

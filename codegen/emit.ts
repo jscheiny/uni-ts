@@ -1,4 +1,4 @@
-import { exists, mkdir, writeFile } from "fs";
+import { mkdir, writeFile } from "fs";
 import { OperatorSpec } from "./common";
 import { genExponentType } from "./genExponent";
 import { genOperatorTests } from "./genTests";
@@ -36,7 +36,10 @@ function getOperatorEmitPlans(prefix: string, genSource: (spec: OperatorSpec) =>
     return operators.map(operator => {
         const operatorSpec: OperatorSpec = { ...operator, ...common };
         const { fileNamePrefix } = operator;
-        return { path: `${prefix}/${fileNamePrefix}.ts`, source: genSource(operatorSpec) };
+        return {
+            path: `${prefix}/${fileNamePrefix}.ts`,
+            source: genSource(operatorSpec),
+        };
     });
 }
 
@@ -45,17 +48,9 @@ function prepForEmit(callback: () => void): void {
 }
 
 function makeDirectory(path: string, callback: () => void): void {
-    exists(path, doesExist => {
-        if (doesExist) {
-            return callback();
-        }
-        mkdir(path, err => {
-            if (err) {
-                console.error(`There was an error creating directory ${path}`);
-            } else {
-                callback();
-            }
-        });
+    mkdir(path, err => {
+        if (!err || err.code === "EEXIST") callback();
+        else console.error(`There was an error creating directory ${path}`);
     });
 }
 

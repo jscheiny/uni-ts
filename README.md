@@ -109,6 +109,10 @@ const megaFurlongsPerMicroFortnight = mega(furlongs)
 console.log(speedOfLight.in(megaFurlongsPerMicroFortnight)); // 1.8026174997852542 Mfur/µftn
 ```
 
+### Converting units for external use
+```typescript
+const distanceInFurlongs: number = Measure.of(2, miles).valueIn(furlongs); // 16
+```
 ### Deriving quantities
 
 ```typescript
